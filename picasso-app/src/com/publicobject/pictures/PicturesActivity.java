@@ -9,8 +9,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.RequestBuilder;
 import java.util.Collections;
 import java.util.List;
 import retrofit.Callback;
@@ -125,17 +123,18 @@ public class PicturesActivity extends Activity {
       String pictureFileName = pictureFileNames.get(position);
       text.setText(pictureFileName);
 
-      // Create a RequestBuilder to fetch the image and load it into the image view.
-      Picasso picasso = app.getPicasso();
-      RequestBuilder requestBuilder = isImage(pictureFileName)
-          ? picasso.load(app.fileToUrl(pictureFileName))
-          : picasso.load(R.drawable.doc);
-
-      // Apply local transformations to the image before displaying it.
-      requestBuilder.placeholder(R.drawable.loading)
-          .resize(300, 260)
-          .centerCrop()
-          .into(picture);
+      if (isImage(pictureFileName)) {
+        // Create a RequestBuilder to fetch the image and load it into the image view.
+        app.getPicasso()
+            .load(app.fileToUrl(pictureFileName))
+            .placeholder(R.drawable.loading)
+            .resize(300, 260)
+            .centerCrop()
+            .into(picture);
+      } else {
+        app.getPicasso().cancelRequest(picture); // If this view is recycled, cancel ongoing loads.
+        picture.setImageResource(R.drawable.doc);
+      }
 
       return view;
     }
