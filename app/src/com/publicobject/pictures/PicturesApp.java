@@ -5,7 +5,7 @@ import retrofit.RestAdapter;
 import retrofit.client.UrlConnectionClient;
 
 public class PicturesApp extends Application {
-  private static final String IMAGE_SERVER = "http://localhost:8910/";
+  private static final String IMAGE_SERVER = "http://10.0.2.2:8910/";
 
   private ImageService imageService;
 
