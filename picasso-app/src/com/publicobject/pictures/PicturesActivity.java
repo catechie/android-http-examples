@@ -129,10 +129,10 @@ public class PicturesActivity extends Activity {
       Picasso picasso = app.getPicasso();
       RequestBuilder requestBuilder = isImage(pictureFileName)
           ? picasso.load(app.fileToUrl(pictureFileName))
-          : picasso.load(R.drawable.ic_launcher);
+          : picasso.load(R.drawable.doc);
 
       // Apply local transformations to the image before displaying it.
-      requestBuilder.placeholder(R.drawable.ic_launcher)
+      requestBuilder.placeholder(R.drawable.loading)
           .resize(300, 260)
           .centerCrop()
           .into(picture);
