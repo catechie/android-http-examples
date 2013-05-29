@@ -75,8 +75,7 @@ public class PicturesActivity extends Activity {
           target.picturesList.setVisibility(View.VISIBLE);
           target.error.setVisibility(View.GONE);
 
-          target.adapter.pictureFileNames = pictures;
-          target.adapter.notifyDataSetChanged();
+          target.adapter.setPictureFileNames(pictures);
         }
 
         @Override public void failure(RetrofitError retrofitError) {
@@ -95,6 +94,11 @@ public class PicturesActivity extends Activity {
   public class PictureListAdapter extends BaseAdapter {
     private List<String> pictureFileNames = Collections.emptyList();
 
+    public void setPictureFileNames(List<String> pictureFileNames) {
+      this.pictureFileNames = pictureFileNames;
+      notifyDataSetChanged();
+    }
+
     @Override public int getCount() {
       return pictureFileNames.size();
     }
@@ -110,7 +114,7 @@ public class PicturesActivity extends Activity {
     @Override public View getView(int position, View convertView, ViewGroup parent) {
       LinearLayout view = convertView != null
           ? (LinearLayout) convertView
-          : (LinearLayout) getLayoutInflater().inflate(R.layout.pictureName, parent, false);
+          : (LinearLayout) getLayoutInflater().inflate(R.layout.pictureitem, parent, false);
       TextView text = (TextView) view.findViewById(R.id.text);
       text.setText(pictureFileNames.get(position));
       return view;
