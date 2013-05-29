@@ -22,10 +22,17 @@
     <mockwebserver.version>20130505</mockwebserver.version>
     <npn.version>8.1.2.v20120308</npn.version>
     <okhttp.version>1.0.2</okhttp.version>
+    <retrofit.version>1.0.0</retrofit.version>
+    <gson.version>2.2.4</gson.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
   <dependencies>
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>${gson.version}</version>
+    </dependency>
     <dependency>
       <groupId>com.google.mockwebserver</groupId>
       <artifactId>mockwebserver</artifactId>
@@ -35,6 +42,11 @@
       <groupId>com.squareup.okhttp</groupId>
       <artifactId>okhttp</artifactId>
       <version>${okhttp.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.squareup.retrofit</groupId>
+      <artifactId>retrofit</artifactId>
+      <version>${retrofit.version}</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>

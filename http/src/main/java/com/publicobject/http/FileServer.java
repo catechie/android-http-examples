@@ -1,5 +1,7 @@
 package com.publicobject.http;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.mockwebserver.Dispatcher;
 import com.google.mockwebserver.MockResponse;
 import com.google.mockwebserver.MockWebServer;
@@ -10,7 +12,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+/**
+ * This application permits read/write access to a directory over HTTP.
+ */
 public class FileServer extends Dispatcher {
+  private final Gson gson = new GsonBuilder().create();
   private final File base;
 
   public FileServer(File base) {
@@ -51,16 +57,11 @@ public class FileServer extends Dispatcher {
   }
 
   private MockResponse serveDirectory(File directory) throws IOException {
-    StringBuilder result = new StringBuilder();
     String[] files = directory.list();
-    if (files != null) {
-      for (String file : files) {
-        result.append(file).append("\n");
-      }
-    }
+    String json = gson.toJson(files, String[].class);
     return new MockResponse()
-        .addHeader("Content-Type: text/plain")
-        .setBody(result.toString());
+        .addHeader("Content-Type: application/json; charset=UTF-8")
+        .setBody(json);
   }
 
   private MockResponse serveFile(File file) throws IOException {
