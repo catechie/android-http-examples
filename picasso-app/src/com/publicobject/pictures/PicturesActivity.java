@@ -5,9 +5,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.RequestBuilder;
 import java.util.Collections;
 import java.util.List;
 import retrofit.Callback;
@@ -92,6 +95,7 @@ public class PicturesActivity extends Activity {
   }
 
   public class PictureListAdapter extends BaseAdapter {
+    private PicturesApp app = getApp();
     private List<String> pictureFileNames = Collections.emptyList();
 
     public void setPictureFileNames(List<String> pictureFileNames) {
@@ -116,8 +120,31 @@ public class PicturesActivity extends Activity {
           ? (LinearLayout) convertView
           : (LinearLayout) getLayoutInflater().inflate(R.layout.pictureitem, parent, false);
       TextView text = (TextView) view.findViewById(R.id.text);
-      text.setText(pictureFileNames.get(position));
+      ImageView picture = (ImageView) view.findViewById(R.id.picture);
+
+      String pictureFileName = pictureFileNames.get(position);
+      text.setText(pictureFileName);
+
+      // Create a RequestBuilder to fetch the image and load it into the image view.
+      Picasso picasso = app.getPicasso();
+      RequestBuilder requestBuilder = isImage(pictureFileName)
+          ? picasso.load(app.fileToUrl(pictureFileName))
+          : picasso.load(R.drawable.ic_launcher);
+
+      // Apply local transformations to the image before displaying it.
+      requestBuilder.placeholder(R.drawable.ic_launcher)
+          .resize(300, 260)
+          .centerCrop()
+          .into(picture);
+
       return view;
     }
+  }
+
+  private boolean isImage(String pictureFileName) {
+    return pictureFileName.endsWith(".png")
+        || pictureFileName.endsWith(".gif")
+        || pictureFileName.endsWith(".jpg")
+        || pictureFileName.endsWith(".jpeg");
   }
 }
