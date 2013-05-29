@@ -5,7 +5,7 @@ import retrofit.Callback;
 import retrofit.http.GET;
 import retrofit.http.Path;
 
-public interface ImageService {
+public interface PictureService {
   @GET("/{directory}")
-  void listImages(@Path("directory") String directory, Callback<List<String>> imagesCallback);
+  void listPictures(@Path("directory") String directory, Callback<List<String>> picturesCallback);
 }

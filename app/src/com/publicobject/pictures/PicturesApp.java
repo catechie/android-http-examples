@@ -5,21 +5,21 @@ import retrofit.RestAdapter;
 import retrofit.client.UrlConnectionClient;
 
 public class PicturesApp extends Application {
-  private static final String IMAGE_SERVER = "http://10.0.2.2:8910/";
+  private static final String PICTURE_SERVER = "http://10.0.2.2:8910/";
 
-  private ImageService imageService;
+  private PictureService pictureService;
 
   @Override public void onCreate() {
     super.onCreate();
 
     RestAdapter restAdapter = new RestAdapter.Builder()
         .setClient(new UrlConnectionClient())
-        .setServer(IMAGE_SERVER)
+        .setServer(PICTURE_SERVER)
         .build();
-    imageService = restAdapter.create(ImageService.class);
+    pictureService = restAdapter.create(PictureService.class);
   }
 
-  public ImageService getImageService() {
-    return imageService;
+  public PictureService getPictureService() {
+    return pictureService;
   }
 }

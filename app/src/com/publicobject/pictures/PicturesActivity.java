@@ -15,11 +15,11 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 public class PicturesActivity extends Activity {
-  private ImagesLoader imagesLoader = new ImagesLoader();
+  private PictureListLoader pictureListLoader = new PictureListLoader();
   private LinearLayout progress;
   private TextView error;
   private ListView picturesList;
-  private ImageListAdapter adapter;
+  private PictureListAdapter adapter;
 
   @Override public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -29,24 +29,24 @@ public class PicturesActivity extends Activity {
     picturesList = (ListView) findViewById(R.id.picturesList);
     error = (TextView) findViewById(R.id.error);
 
-    adapter = new ImageListAdapter();
+    adapter = new PictureListAdapter();
     picturesList.setAdapter(adapter);
 
     error.setOnClickListener(new View.OnClickListener() {
       @Override public void onClick(View v) {
-        imagesLoader.load(getApp());
+        pictureListLoader.load(getApp());
       }
     });
   }
 
   @Override protected void onResume() {
     super.onResume();
-    imagesLoader.setTarget(this);
-    imagesLoader.load(getApp());
+    pictureListLoader.setTarget(this);
+    pictureListLoader.load(getApp());
   }
 
   @Override protected void onPause() {
-    imagesLoader.setTarget(null);
+    pictureListLoader.setTarget(null);
     super.onPause();
   }
 
@@ -54,7 +54,7 @@ public class PicturesActivity extends Activity {
     return (PicturesApp) getApplication();
   }
 
-  public static class ImagesLoader {
+  public static class PictureListLoader {
     PicturesActivity target;
 
     public void setTarget(PicturesActivity target) {
@@ -66,39 +66,41 @@ public class PicturesActivity extends Activity {
       target.picturesList.setVisibility(View.GONE);
       target.error.setVisibility(View.GONE);
 
-      ImageService imageService = app.getImageService();
-      imageService.listImages("", new Callback<List<String>>() {
-        @Override public void success(List<String> images, Response response) {
-          if (target != null) {
-            target.progress.setVisibility(View.GONE);
-            target.picturesList.setVisibility(View.VISIBLE);
-            target.error.setVisibility(View.GONE);
-            target.adapter.images = images;
-            target.adapter.notifyDataSetChanged();
-          }
+      PictureService pictureService = app.getPictureService();
+      pictureService.listPictures("", new Callback<List<String>>() {
+        @Override public void success(List<String> pictures, Response response) {
+          if (target == null) return;
+
+          target.progress.setVisibility(View.GONE);
+          target.picturesList.setVisibility(View.VISIBLE);
+          target.error.setVisibility(View.GONE);
+
+          target.adapter.pictureFileNames = pictures;
+          target.adapter.notifyDataSetChanged();
         }
 
         @Override public void failure(RetrofitError retrofitError) {
-          if (target != null) {
-            target.error.setVisibility(View.VISIBLE);
-            target.progress.setVisibility(View.GONE);
-            target.picturesList.setVisibility(View.GONE);
-            target.error.setText("Error: " + retrofitError.getMessage());
-          }
+          if (target == null) return;
+
+          target.error.setVisibility(View.VISIBLE);
+          target.progress.setVisibility(View.GONE);
+          target.picturesList.setVisibility(View.GONE);
+
+          target.error.setText("Error: " + retrofitError.getMessage());
         }
       });
     }
   }
 
-  public class ImageListAdapter extends BaseAdapter {
-    private List<String> images = Collections.emptyList();
+  public class PictureListAdapter extends BaseAdapter {
+    private List<String> pictureFileNames = Collections.emptyList();
 
     @Override public int getCount() {
-      return images.size();
+      return pictureFileNames.size();
     }
 
     @Override public Object getItem(int position) {
-      return images.get(position);
+      return pictureFileNames.get(position);
     }
 
     @Override public long getItemId(int position) {
@@ -108,9 +110,9 @@ public class PicturesActivity extends Activity {
     @Override public View getView(int position, View convertView, ViewGroup parent) {
       LinearLayout view = convertView != null
           ? (LinearLayout) convertView
-          : (LinearLayout) getLayoutInflater().inflate(R.layout.image, parent, false);
+          : (LinearLayout) getLayoutInflater().inflate(R.layout.pictureName, parent, false);
       TextView text = (TextView) view.findViewById(R.id.text);
-      text.setText(images.get(position));
+      text.setText(pictureFileNames.get(position));
       return view;
     }
   }
